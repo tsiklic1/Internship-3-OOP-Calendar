@@ -158,8 +158,6 @@ namespace kalendar
                 }
             }
 
-
-
             void ActiveEvents(List<Event> eventList, List<Person> personList)
             {
                 Console.Clear();
@@ -209,7 +207,6 @@ namespace kalendar
                                     var stringOfEmailsAbsent = Console.ReadLine();
                                     string[] emailsSplitList = stringOfEmailsAbsent.Split(" ");  //ovo je ka neka fejk lista sa mailovima koji su uneseni
 
-
                                     Console.WriteLine("Ako želite nastaviti s radnjom upišite DA");
                                     var confirmation = Console.ReadLine();
                                     if (confirmation == "DA")
@@ -224,10 +221,7 @@ namespace kalendar
                                                 }
 
                                             }
-
                                         }
-
-
 
                                         foreach (var email in emailsSplitList) //ovo miče sve neprisutne koji su uneseni
                                         {
@@ -239,15 +233,11 @@ namespace kalendar
                                     }
                                     else
                                         Console.WriteLine("Poništavanje radnje");
-
-
-
                                 }
                             }
 
                             if (!eventExists)
                                 Console.WriteLine("Aktivni event s tim id-om ne postoji.");
-
                             break;
 
                         case "0":
@@ -258,8 +248,6 @@ namespace kalendar
                             Console.WriteLine("Niste odabrali valjanu opciju.");
                             break;
                     }
-
-
                 }
             }
 
@@ -278,8 +266,8 @@ namespace kalendar
                         Console.WriteLine("Sudionici: " + item.WriteParticipants());
                         listOfUpcomingEvents.Add(item);
                     }
-
                 }
+
                 if (count == 0)
                     Console.WriteLine("Nema trenutno aktivnih evenata");
                 Console.WriteLine("");
@@ -320,22 +308,17 @@ namespace kalendar
                                         break;
                                     }
                                 }
-
                                 if (!eventExists)
                                     Console.WriteLine("Nadolazeci event s tim id-om ne postoji.");
                             }
 
                             else
                                 Console.WriteLine("Ponistavanje radnje");
-
-
-
-
                             break;
                         case "2":
                             Console.WriteLine("Odabrali ste opciju 2 - Ukloni osobe s eventa");
                             Console.WriteLine("Unesite id nadolazeceg eventa s kojeg zelite obrisati osobe");
-                            Guid eventId;                                        //ode spremin uneseni guid (id)
+                            Guid eventId;                                        
                             var eventToRemovePersons = Console.ReadLine();
                             bool isEventGuid = Guid.TryParse(eventToRemovePersons, out eventId);
                             var eventExists1 = false;
@@ -348,8 +331,6 @@ namespace kalendar
                                     Console.WriteLine("Unesite emailove osoba kojima zelite ukloniti s eventa (odvojene razmakom)");
                                     var stringOfEmailsAbsent = Console.ReadLine();
                                     string[] emailsSplitList = stringOfEmailsAbsent.Split(" ");
-
-
                                     Console.WriteLine("Ako želite potvrditi radnju napisite DA");
                                     var confirmation2 = Console.ReadLine();
 
@@ -371,9 +352,7 @@ namespace kalendar
                                         foreach (var person in personList)
                                         {
                                             var didRemoveEvent = person.RemoveEvent(eventId);
-
                                         }
-
                                         break;  //ovi break je tu da kad nađe trazeni event u listi evenata da obavi šta triba i izađe, da ne vrti sve do kraja
                                     }
                                     else
@@ -469,7 +448,7 @@ namespace kalendar
                         if (eventBeginDate < DateTime.Now)
                             Console.WriteLine("Ne može se kreirati event u proslosti. Vraceni ste na pocetni menu.");
 
-                        else //sve dalje triba radit unutar ovog elsea
+                        else 
                         {
                             Console.WriteLine("Unesite datum kraja eventa (u formatu mjesec/dan/godina)");
                             var inputtedEndDate = DateTime.TryParse(Console.ReadLine(), out eventEndDate);
@@ -481,15 +460,12 @@ namespace kalendar
                                 if (inputtedEndHours)
                                 {
                                     eventEndDate = eventEndDate.AddHours(eventEndHours);
-
                                     Console.WriteLine("Unesite emailove sudionika na ovome eventu (odvojene razmakom)");
                                     var participantEmailsString = Console.ReadLine();
                                     string[] emailsSplitList = participantEmailsString.Split(" ");
-
-                                    //sad imamo mailove osoba i vrmena početka
-
                                     Console.WriteLine("Ako ste sigurni da zelite kreirati event upisite DA");
                                     var confirmation = Console.ReadLine();
+
                                     if (confirmation == "DA")
                                     {
                                         if (eventBeginDate >= eventEndDate)
@@ -498,8 +474,6 @@ namespace kalendar
                                         }
                                         else //ako je uslo u ovi else onda sve valja i triba kreirat event
                                         {
-                                            //sad triba provjerit da se osobama ne priklapa
-                                            //prvo kreiramo event - to ce nan napravit id
                                             var newEvent = new Event()
                                             {
                                                 Name = newEventName,
@@ -508,31 +482,24 @@ namespace kalendar
                                                 EventEndDate = eventEndDate,
                                             };
 
-
                                             foreach (var person in listOfPersons)
                                             {
-
-                                                if (emailsSplitList.Contains(person.Email))     //ovo znači da je ta osoba dodana u novi event
+                                                if (emailsSplitList.Contains(person.Email))    
                                                 {
                                                     var overlappingEvents = 0;
-                                                    foreach (var item in person.AttendanceDict.Keys.ToList())  //prolazi kroz sve evente sta osoba ima  !!!!!OVDI JAVLJA EROR collection was modified (vjv ce tribat napravit kopiju ovoga attendance dicta i onda kroz nju prolazit)
+                                                    foreach (var item in person.AttendanceDict.Keys.ToList()) 
                                                     {
                                                         if (person.AttendanceDict[item] == true)
                                                         {
-                                                            foreach (var event1 in eventList)  //event1 - stari event
+                                                            foreach (var event1 in eventList)  
                                                             {
-                                                                if (item == event1.Id)  //ovo dohvaća event da možemo uzet vrime 
+                                                                if (item == event1.Id)  
                                                                 {
 
                                                                     if ((newEvent.EventBeginDate < event1.EventBeginDate && newEvent.EventEndDate > event1.EventBeginDate) || (newEvent.EventBeginDate < event1.EventEndDate && newEvent.EventEndDate > event1.EventEndDate))
                                                                     {
-                                                                        //Console.WriteLine($"Osobi s mailom {person.Email} se event preklapa s drugim pa nije dodana");
                                                                         overlappingEvents++;
-                                                                        //Console.WriteLine(event1.EventBeginDate);
-                                                                        //Console.WriteLine(event1.EventEndDate);
                                                                     }
-
-
                                                                 }
                                                             }
 
@@ -545,7 +512,6 @@ namespace kalendar
                                                     }
                                                     else
                                                         Console.WriteLine($"Osobi s mailom {person.Email} se event preklapa s drugim pa nije dodana");
-
                                                 }
 
                                             }
